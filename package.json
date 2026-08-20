@@ -1,0 +1,43 @@
+{
+  "name": "baqezu-hub",
+  "version": "1.0.0",
+  "description": "BAQEZU HUB Desktop",
+  "main": "main.js",
+  "author": "BAQEZU",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "com.baqezu.hub",
+    "productName": "BAQEZU HUB",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "runAfterFinish": true
+    }
+  },
+  "devDependencies": {
+    "electron": "^37.10.3",
+    "electron-builder": "^24.13.3"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/cli": "^8.5.0",
+    "@capacitor/core": "^8.5.0",
+    "@capacitor/ios": "^8.5.0",
+    "electron-store": "^8.2.0"
+  }
+}
