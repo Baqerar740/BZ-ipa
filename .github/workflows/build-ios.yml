@@ -9,28 +9,31 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Install Dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
-      - name: Sync Capacitor
+      - name: Build Web Assets
+        run: npm run build --if-present
+
+      - name: Sync Capacitor iOS
         run: npx cap sync ios
 
-      - name: Build App in Xcode
+      - name: Build Xcode Workspace
         run: |
           cd ios/App
-          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -derivedDataPath build -sdk iphoneos CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -derivedDataPath build -sdk iphoneos CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO Clean build
 
-      - name: Create Unsigned IPA
+      - name: Create IPA Package
         run: |
           mkdir -p Payload
-          cp -r ios/App/build/Build/Products/Release-iphoneos/App.app Payload/
+          cp -r ios/App/build/Build/Products/Release-iphoneos/*.app Payload/
           zip -r BaqezUGames.ipa Payload
 
       - name: Upload IPA Artifact
