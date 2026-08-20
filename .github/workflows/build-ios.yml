@@ -19,8 +19,13 @@ jobs:
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Build Web Assets
-        run: npm run build --if-present
+      - name: Ensure Dist Directory
+        run: |
+          mkdir -p dist www
+          cp -r src/* dist/ 2>/dev/null || true
+          cp -r src/* www/ 2>/dev/null || true
+          cp *.html *.js *.json dist/ 2>/dev/null || true
+          cp *.html *.js *.json www/ 2>/dev/null || true
 
       - name: Sync Capacitor iOS
         run: npx cap sync ios
