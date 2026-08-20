@@ -17,23 +17,25 @@ jobs:
           node-version: 22
 
       - name: Install Dependencies
-        run: npm install --legacy-peer-deps
-
-      - name: Ensure Dist Directory
         run: |
-          mkdir -p dist www
-          cp -r src/* dist/ 2>/dev/null || true
+          npm install --legacy-peer-deps
+          npm install @capacitor/core @capacitor/cli @capacitor/ios --save-dev
+
+      - name: Prepare Web Directory
+        run: |
+          mkdir -p www
           cp -r src/* www/ 2>/dev/null || true
-          cp *.html *.js *.json dist/ 2>/dev/null || true
-          cp *.html *.js *.json www/ 2>/dev/null || true
+          cp *.html *.js *.css www/ 2>/dev/null || true
 
-      - name: Sync Capacitor iOS
-        run: npx cap sync ios
+      - name: Add and Sync iOS Platform
+        run: |
+          npx cap add ios || true
+          npx cap sync ios
 
-      - name: Build Xcode Workspace
+      - name: Build Xcode Project
         run: |
           cd ios/App
-          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -derivedDataPath build -sdk iphoneos CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build
+          xcodebuild -project App.xcodeproj -scheme App -configuration Release -derivedDataPath build -sdk iphoneos CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build || xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -derivedDataPath build -sdk iphoneos CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build
 
       - name: Create IPA Package
         run: |
